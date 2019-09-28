@@ -1,0 +1,19 @@
+<div class="container" *ngIf="isLoadingRooms === false">
+  <div style="padding: 20px" class="row justify-content-center" *ngFor="let room of roomsService.rooms">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col col-auto">
+            <div>Nom : {{room.name}}</div>
+            <div>Description : {{room.description}}</div>
+            <div>Capacité : {{room.capacity}} personnes</div>
+            <div>Equipements : {{room.getEquipmentString()}}</div>
+          </div>
+          <div class="col col-auto">
+            <button [disabled]="isReservationLoading" style="position: relative; top: 25%" type="button" (click)="bookRoom()" class="btn btn-primary">Reserver</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<div class="col-auto">
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+
+        <!--Start Date-->
+        <div class="col-auto">
+          <input class="form-control" placeholder="dd-mm-yyyy"
+                 name="dp" [(ngModel)]="dateStart" ngbDatepicker #d="ngbDatepicker">
+        </div>
+        <div class="col-auto">
+          <div class="input-group-append">
+            <button style="height: 38px" class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+          </div>
+        </div>
+
+        <!--End Date-->
+        <div class="col-auto">
+          <input class="form-control" placeholder="dd-mm-yyyy"
+                 name="dp" [(ngModel)]="dateEnd" ngbDatepicker #e="ngbDatepicker">
+        </div>
+        <div class="col-auto">
+          <div class="input-group-append">
+            <button style="height: 38px" class="btn btn-outline-secondary calendar" (click)="e.toggle()" type="button"></button>
+          </div>
+        </div>
+
+        <!--Capacity-->
+        <div class="col-auto">
+          <input placeholder="Capacité" class="form-control" type="number" [(ngModel)]="capacity">
+        </div>
+
+        <!--Equipments-->
+        <div class="col-auto">
+          <select [(ngModel)]="equipments" style="border : 1px solid #ced4da" class="selectpicker" multiple data-live-search="true">
+            <option *ngFor="let equipment of equipmentService.equipments">{{equipment.name}}</option>
+          </select>
+
+          <!--Search-->
+          <div class="col-auto">
+            <button type="button" (click)="searchRooms()" class="btn btn-primary">Rechercher une salle</button>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
