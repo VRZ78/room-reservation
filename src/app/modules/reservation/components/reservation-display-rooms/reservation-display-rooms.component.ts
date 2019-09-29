@@ -12,14 +12,19 @@ export class ReservationDisplayRoomsComponent implements OnInit {
   isLoadingRooms : boolean = true;
   isReservationLoading : boolean = false;
   searchCriterias : any;
+  displayRoomBookedToast : boolean = false;
 
   constructor(private roomsService : RoomsService) { }
 
   ngOnInit() {
+    this.roomsService.onRoomBooked.subscribe(() => {
+      this.displayRoomBookedToast = true;
+    })
   }
   
   refreshRooms = (searchCriterias) => {
     this.isLoadingRooms = true;
+    this.displayRoomBookedToast = false;
     this.searchCriterias = searchCriterias;
     this.roomsService.loadRooms(searchCriterias).then(() => {
       this.isLoadingRooms = false;
@@ -28,7 +33,7 @@ export class ReservationDisplayRoomsComponent implements OnInit {
 
   bookRoom = (room : Room) => {
     this.isReservationLoading = true;
-    this.roomsService.bookRoom(room, this.searchCriterias.dateStart, this.searchCriterias.dateEnd).then(() => {
+    this.roomsService.bookRoom(room, this.searchCriterias.dateStart, this.searchCriterias.dateEnd, this.searchCriterias.numberOfPeople).then(() => {
       this.isReservationLoading = false;
     }, (err) => {
       this.isReservationLoading = false;

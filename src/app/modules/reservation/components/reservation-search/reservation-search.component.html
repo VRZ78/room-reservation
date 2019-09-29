@@ -1,51 +1,77 @@
-<div class="col-auto">
+<div class="col col-12">
   <div class="card">
     <div class="card-body">
-      <div class="row">
 
-        <!--Start Date-->
-        <div class="col-auto">
+      <!--Start Date-->
+      <div class="row">
+        <div class="col col-4">
+          <p>Date de la réunion</p>
+        </div>
+        <div class="col col-6">
           <input class="form-control" placeholder="dd-mm-yyyy"
                  name="dp" [(ngModel)]="dateStart" ngbDatepicker #d="ngbDatepicker">
         </div>
-        <div class="col-auto">
-          <div class="input-group-append">
-            <button style="height: 38px" class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
-          </div>
+        <div class="col col-2">
+          <button style="height: 38px" class="btn btn-outline-secondary calendar" (click)="d.toggle()"
+                  type="button"></button>
         </div>
+      </div>
 
-        <!--End Date-->
-        <div class="col-auto">
-          <input class="form-control" placeholder="dd-mm-yyyy"
-                 name="dp" [(ngModel)]="dateEnd" ngbDatepicker #e="ngbDatepicker">
+      <!--Start Time-->
+      <div class="row" style="margin-bottom: 4%">
+        <div class="col col-4">
+          <p>Heure de début</p>
         </div>
-        <div class="col-auto">
-          <div class="input-group-append">
-            <button style="height: 38px" class="btn btn-outline-secondary calendar" (click)="e.toggle()" type="button"></button>
-          </div>
+        <div class="col col-8" style="margin-top: -6%">
+          <ngb-timepicker [(ngModel)]="timeStart"></ngb-timepicker>
         </div>
+      </div>
 
-        <!--Capacity-->
-        <div class="col-auto">
-          <input placeholder="Capacité" class="form-control" type="number" [(ngModel)]="capacity">
+      <!--End Date-->
+      <div class="row">
+        <div class="col col-4">
+          <p>Heure de fin</p>
         </div>
+        <div class="col col-8" style="margin-top: -6%">
+          <ngb-timepicker [(ngModel)]="timeEnd"></ngb-timepicker>
+        </div>
+      </div>
 
-        <!--Equipments-->
-        <div class="col-auto">
-          <select [(ngModel)]="equipments" style="border : 1px solid #ced4da" class="selectpicker" multiple data-live-search="true">
+      <!--Number of poeple-->
+      <div class="row">
+        <div class="col col-4">
+          <p>Nombre de participants</p>
+        </div>
+        <div class="col col-8">
+          <input placeholder="Nombre de participants" class="form-control" type="number" [(ngModel)]="numberOfPeople">
+        </div>
+      </div>
+
+      <!--Equipments-->
+      <div class="row">
+        <div class="col col-4">
+          <p>Equipements</p>
+        </div>
+        <div class="col col-8">
+          <select [(ngModel)]="equipments" style="border : 1px solid #ced4da" class="selectpicker" multiple
+                  data-live-search="true">
             <option *ngFor="let equipment of equipmentService.equipments">{{equipment.name}}</option>
           </select>
-
-          <!--Search-->
-          <div class="col-auto">
-            <button type="button" (click)="searchRooms()" class="btn btn-primary">Rechercher une salle</button>
-          </div>
         </div>
-
-
-
       </div>
+
+      <!--Search-->
+      <div class="row justify-content-center">
+        <button type="button" [disabled]="!dateStart || !timeEnd || !timeStart || !numberOfPeople || numberOfPeople < 0"
+                (click)="searchRooms()" class="btn btn-primary">Rechercher une salle
+        </button>
+      </div>
+
+      <!--Alert-->
+      <div class="alert alert-danger" style="margin-top: 28px" *ngIf="showInvalidDateMessage" role="alert">
+        La date de fin doit être supérieure à la date de début
+      </div>
+
     </div>
   </div>
-</div>
 

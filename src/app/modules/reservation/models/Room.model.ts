@@ -7,6 +7,7 @@ export class Room {
   description : string;
   capacity : number;
   equipments : Equipment[];
+  isAvailable : boolean;
 
   constructor(data) {
 
@@ -34,6 +35,36 @@ export class Room {
     }
 
     return str;
+  }
+
+  /**
+   * Check if the room check the search criterias
+   * @param searchCriterias
+   */
+  matchCriterias = (searchCriterias) => {
+
+    // Capacity
+    if(this.capacity < searchCriterias.numberOfPeople) {
+      return false;
+    }
+
+    // Equipments
+    if(searchCriterias.equipments) {
+      let matchEquipments : number = 0;
+      for(let i = 0; i < searchCriterias.equipments.length; i++) {
+        for(let j = 0; j < this.equipments.length; j++) {
+          if(searchCriterias.equipments[i] === this.equipments[j].name) {
+            matchEquipments++;
+            break;
+          }
+        }
+      }
+      if(matchEquipments !== searchCriterias.equipments.length) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
 

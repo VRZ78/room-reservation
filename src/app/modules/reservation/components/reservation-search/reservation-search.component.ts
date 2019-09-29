@@ -9,10 +9,12 @@ import {EquipmentsService} from "../../services/equipments.service";
 })
 export class ReservationSearchComponent implements OnInit {
 
-  dateStart: Date;
-  dateEnd: Date;
-  capacity: Number;
+  dateStart: { year: number, month: number, day: number };
+  timeStart: { hour: number, minute: number };
+  timeEnd: { hour: number, minute: number };
+  numberOfPeople: Number;
   equipments: Equipment[];
+  showInvalidDateMessage: boolean;
   @Output() onSearchButtonClicked: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private equipmentService: EquipmentsService) {
@@ -22,12 +24,18 @@ export class ReservationSearchComponent implements OnInit {
   }
 
   searchRooms = () => {
-    this.onSearchButtonClicked.emit({
-      dateStart: this.dateStart,
-      dateEnd: this.dateEnd,
-      capacity: this.capacity,
+    let toEmit = {
+      dateStart: new Date(this.dateStart.year, this.dateStart.month - 1, this.dateStart.day, this.timeStart.hour, this.timeStart.minute),
+      dateEnd: new Date(this.dateStart.year, this.dateStart.month - 1, this.dateStart.day, this.timeEnd.hour, this.timeEnd.minute),
+      numberOfPeople: this.numberOfPeople,
       equipments: this.equipments
-    });
-  }
+    }
+    if (toEmit.dateEnd > toEmit.dateStart) {
+      this.showInvalidDateMessage = false;
+      this.onSearchButtonClicked.emit(toEmit);
+    } else {
+      this.showInvalidDateMessage = true;
+    }
 
-}
+  }
+};

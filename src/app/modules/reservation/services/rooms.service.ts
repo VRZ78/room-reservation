@@ -1,11 +1,15 @@
-import {Injectable} from "@angular/core";
+import {EventEmitter, Injectable} from "@angular/core";
 import {Room} from "../models/Room.model";
+import {HttpClient} from "@angular/common/http";
+import {ConfigService} from "../../../../config/config.service";
+import {Reservation} from "../models/Reservation.model";
 
 @Injectable()
 
 export class RoomsService {
 
-    rawRooms : {}[] = [
+  onRoomBooked = new EventEmitter<void>();
+  rawRooms : {}[] = [
       {
         "name":"Salle Google",
         "description":"Salle Google",
@@ -87,7 +91,7 @@ export class RoomsService {
 
   rooms : Room[] = [];
 
-  constructor() {
+  constructor(private http: HttpClient, private configService : ConfigService) {
 
   }
 
@@ -102,6 +106,9 @@ export class RoomsService {
 
       for(let i = 0; i < this.rawRooms.length; i++) {
         this.rooms.push(new Room(this.rawRooms[i]))
+        this.checkAvailability(this.rooms[i], searchCriterias.dateStart, searchCriterias.dateEnd).catch((err) => {
+          console.log(err);
+        })
       }
 
       resolve()
@@ -111,13 +118,50 @@ export class RoomsService {
   /**
    * Send a booking request to the server
    * @param room
-   * @param start
-   * @param end
+   * @param datStart
+   * @param dateEnd
+   * @param numberOfPeople
    */
-  bookRoom = (room : Room, start : Date, end : Date) => {
+  bookRoom = (room : Room, datStart : Date, dateEnd : Date, numberOfPeople : Number) => {
     return new Promise(((resolve, reject) => {
 
+      // Create reservation instance
+      let reservation = new Reservation({room : room, dateStart : datStart, dateEnd : dateEnd, nbOfPeople : numberOfPeople});
+
+      // Send reservation to API
+      this.http.post(this.configService.uriRoot + '/reservations',reservation).toPromise().then((data : any) => {
+        // Affect id returned by the API to the reservation
+        if(data && data.id) {
+          reservation.id = data.id;
+        }
+        // Hide room from list
+        room.isAvailable = false;
+        this.onRoomBooked.emit();
+        resolve(reservation);
+      }, (err) => {
+        reject(err);
+      })
     }))
   }
 
+  checkAvailability = (room : Room, datStart : Date, dateEnd : Date) => {
+    return new Promise(((resolve, reject) => {
+
+      // Construct params string
+      let paramString = "?dateStart=" + datStart.toISOString() + "&dateEnd=" + dateEnd.toISOString();
+
+      // Send request to API
+      this.http.get(this.configService.uriRoot + '/rooms/' + room.name + '/availability' + paramString).toPromise().then((data : any) => {
+        if(data.available) {
+          room.isAvailable = true;
+        } else {
+          room.isAvailable = false;
+        }
+        resolve()
+      }, (err) => {
+        reject(err);
+      })
+    }))
+
+  }
 }

@@ -7,6 +7,7 @@ import {ReservationMainComponent} from "./modules/reservation/components/reserva
 import { ReservationSearchComponent } from './modules/reservation/components/reservation-search/reservation-search.component';
 import {FormsModule} from "@angular/forms";
 import { ReservationDisplayRoomsComponent } from './modules/reservation/components/reservation-display-rooms/reservation-display-rooms.component';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ReservationDisplayRoomsComponent } from './modules/reservation/componen
   imports: [
     BrowserModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [ConfigService],
   bootstrap: [AppComponent]
